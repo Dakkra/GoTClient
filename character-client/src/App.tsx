@@ -1,24 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Autocomplete, Card, TextField } from '@mui/material';
 
 function App() {
+
+  const [data, setData] = useState("");
+  const [autoOptions, setAutoOptions] = useState<Array<string>>(["John", "Chris"]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData(event.target.value);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Autocomplete fullWidth freeSolo options={autoOptions} renderInput={(params) => <TextField {...params} label="Character Search" onChange={handleInputChange} />}></Autocomplete>
+        <Card>{data}</Card>
     </div>
   );
 }

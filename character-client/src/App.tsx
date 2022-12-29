@@ -1,21 +1,37 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Autocomplete, Card, TextField } from '@mui/material';
+import { Card, TextField, Typography } from '@mui/material';
+
+interface Character{
+  name: string,
+  born: string, 
+  aliases: string[],
+  titles: string[]
+}
 
 function App() {
 
-  const [data, setData] = useState("");
-  const [autoOptions, setAutoOptions] = useState<Array<string>>(["John", "Chris"]);
+  const [characterDetails, setCharacterDetails] = useState<Character>();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setData(event.target.value);
+  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value !== undefined && value !== ""){
+      const request = "https://www.anapioficeandfire.com/api/characters?name=" + encodeURIComponent(value);
+      const result = await (await fetch(request)).json();
+  
+      setCharacterDetails(result[0] as Character);
+    }
   };
 
   return (
     <div className="App">
-        <Autocomplete fullWidth freeSolo options={autoOptions} renderInput={(params) => <TextField {...params} label="Character Search" onChange={handleInputChange} />}></Autocomplete>
-        <Card>{data}</Card>
+        <TextField fullWidth label="Character Name" onChange={handleInputChange}></TextField>
+        <Card>
+        <Typography>Name: {characterDetails?.name}</Typography>
+        <Typography>Born: {characterDetails?.born}</Typography>
+        <Typography>Titles: {characterDetails?.titles.map(e => `${e}, `)}</Typography>
+        <Typography>Aliases: {characterDetails?.aliases.map(e => `${e}, `)}</Typography>
+        </Card>
     </div>
   );
 }
